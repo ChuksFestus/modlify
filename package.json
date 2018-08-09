@@ -1,11 +1,8 @@
 {
-  "name": "the-modal",
+  "name": "modlify",
   "version": "1.0.0",
   "description": "Modal dialog component for React.JS",
-  "keywords": [
-    "modal",
-    "reactjs"
-  ],
+  "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "lodash": "4.17.10",
