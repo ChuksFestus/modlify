@@ -1,16 +1,21 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
+import isNil from "lodash/fp/isNil";
+import PropTypes from "prop-types";
 
 const Overlay = styled.div`
   display:flex;
   justify-content: center;
   align-items: center;
   position:fixed;
-  height:100vh;
-  width: 100vw;
-  background: #757575;
+  top:0;
+  right:0;
+  left:0;
+  bottom:0;
+  background: #757575ad;
   animation: ${transition} .5s ease;
   opacity: 1;
+  z-index: 9999;
 `;
 
 const transition = keyframes`
@@ -28,7 +33,7 @@ const transition = keyframes`
 `;
 
 const MainModal = styled.div`
-  width: auto;
+  width: 90%;
   background: #ffff;
   border-radius: 4px;
   padding: 1rem;
@@ -54,13 +59,55 @@ const Close = styled.button`
 `;
 
 class Modal extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener("keyup", this.handleKeyUp, false);
+    document.addEventListener("click", this.handleOutsideClick, false);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.handleKeyUp, false);
+    document.removeEventListener("click", this.handleOutsideClick, false);
+  }
+
+  handleKeyUp(e) {
+    const { onCloseRequest } = this.props;
+    const keys = {
+      27: () => {
+        e.preventDefault();
+        onCloseRequest();
+        window.removeEventListener("keyup", this.handleKeyUp, false);
+      }
+    };
+
+    if (keys[e.keyCode]) {
+      keys[e.keyCode]();
+    }
+  }
+
+  handleOutsideClick(e) {
+    const { onCloseRequest } = this.props;
+
+    if (!isNil(this.modal)) {
+      onCloseRequest();
+      document.removeEventListener("click", this.handleOutsideClick, false);
+    }
+  }
+
   render() {
+    const { onCloseRequest, children } = this.props;
     return (
       <Overlay>
-        <MainModal>
-          <Content>sjs</Content>
+        <MainModal ref={node => (this.modal = node)}>
+          <Content>{children}</Content>
         </MainModal>
-        <Close>x</Close>
+        <Close onClick={onCloseRequest}>x</Close>
       </Overlay>
     );
   }
