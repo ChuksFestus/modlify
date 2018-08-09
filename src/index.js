@@ -1,13 +1,38 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import styled from "styled-components";
 
-import ModalContainer from "./ModalContainer/index";
+import Modal from "./Modal/index";
 
-import "./styles.css";
+const Button = styled.button`
+  border: 0;
+  padding: .7rem 1.8rem;
+`;
 
-function App() {
-  return <ModalContainer />;
+class ModalContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false
+    };
+  }
+
+  handleToggleModal() {
+    this.setState({ showModal: !this.state.showModal });
+  }
+  render() {
+    const { buttonLabel, children } = this.props;
+    const { showModal } = this.state;
+    return (
+      <React.Fragment>
+        <Button onClick={() => this.handleToggleModal()}>{buttonLabel}</Button>
+        {showModal && (
+          <Modal onCloseRequest={() => this.handleToggleModal()}>
+            {children}
+          </Modal>
+        )}
+      </React.Fragment>
+    );
+  }
 }
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+export default ModalContainer;
