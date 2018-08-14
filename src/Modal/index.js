@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import styled, { keyframes } from "styled-components";
 import isNil from "lodash/fp/isNil";
 import PropTypes from "prop-types";
@@ -62,18 +62,35 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.outsideModal = createRef();
+    this.insideModal = createRef();
+    this.blockedModal = false;
+
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
+    this.blockModal = this.blockModal.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener("keyup", this.handleKeyUp, false);
-    document.addEventListener("click", this.handleOutsideClick, false);
+    this.outsideModal.current.addEventListener(
+      "click",
+      this.handleOutsideClick
+    );
+    this.insideModal.current.addEventListener("mousedown", this.blockModal);
   }
 
   componentWillUnmount() {
     window.removeEventListener("keyup", this.handleKeyUp, false);
-    document.removeEventListener("click", this.handleOutsideClick, false);
+    this.outsideModal.current.removeEventListener(
+      "click",
+      this.handleOutsideClick
+    );
+    this.insideModal.current.removeEventListener("mousedown", this.blockModal);
+  }
+
+  blockModal() {
+    this.blockedModal = true;
   }
 
   handleKeyUp(e) {
@@ -94,21 +111,26 @@ class Modal extends React.Component {
   handleOutsideClick(e) {
     const { onCloseRequest } = this.props;
 
-    if (!isNil(this.modal)) {
-      onCloseRequest();
-      document.removeEventListener("click", this.handleOutsideClick, false);
+    if (!this.blockedModal) {
+      return onCloseRequest();
     }
+
+    this.blockedModal = false;
   }
 
   render() {
     const { onCloseRequest, children } = this.props;
     return (
-      <Overlay>
-        <MainModal ref={node => (this.modal = node)}>
-          <Content>{children}</Content>
-        </MainModal>
-        <Close onClick={onCloseRequest}>x</Close>
-      </Overlay>
+      <div ref={this.outsideModal}>
+        <Overlay>
+          <MainModal>
+            <div ref={this.insideModal}>
+              <Content>{children}</Content>
+            </div>
+          </MainModal>
+          <Close onClick={onCloseRequest}>x</Close>
+        </Overlay>
+      </div>
     );
   }
 }
