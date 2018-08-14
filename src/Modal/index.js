@@ -13,7 +13,7 @@ const Overlay = styled.div`
   left:0;
   bottom:0;
   background: #757575ad;
-  animation: ${transition} .5s ease;
+  animation: ${transition} .8s ease;
   opacity: 1;
   z-index: 9999;
 `;
