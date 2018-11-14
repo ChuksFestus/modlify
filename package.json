@@ -1,6 +1,6 @@
 {
   "name": "modlify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modal dialog component for React.JS",
   "keywords": [],
   "main": "src/index.js",
