@@ -1,19 +1,17 @@
 import React, { createRef } from "react";
 import styled, { keyframes } from "styled-components";
-import isNil from "lodash/fp/isNil";
-import PropTypes from "prop-types";
 
 const Overlay = styled.div`
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  position:fixed;
-  top:0;
-  right:0;
-  left:0;
-  bottom:0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
   background: #757575ad;
-  animation: ${transition} .8s ease;
+  animation: ${transition} 0.8s ease;
   opacity: 1;
   z-index: 9999;
 `;
@@ -37,19 +35,18 @@ const MainModal = styled.div`
   background: #ffff;
   border-radius: 4px;
   padding: 1rem;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 
-  @media(min-width: 576px) {
+  @media (min-width: 576px) {
     width: 32rem;
   }
 `;
 
-const Content = styled.div`
-`;
+const Content = styled.div``;
 
 const Close = styled.button`
   position: fixed;
-  top:0;
+  top: 0;
   right: 1rem;
   color: #fff;
   cursor: pointer;
